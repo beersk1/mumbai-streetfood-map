@@ -10,6 +10,8 @@ export type Stall = {
   note: string;
   openHours: string;
   price: string;
+  addedAt?: string;
+  createdAt?: number;
 };
 
 export type Review = {
@@ -21,6 +23,7 @@ export type Review = {
   text: string;
   photoUrl: string;
   timestamp: string;
+  createdAt?: number;
 };
 
 export type User = {
@@ -30,11 +33,20 @@ export type User = {
   trustScore: number;
 };
 
+export type Activity = {
+  id: string;
+  kind: 'review' | 'stall';
+  user: User;
+  review?: Review;
+  stall: Stall;
+  timestamp: string;
+};
+
 const foodImage = (id: string) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=1000`;
 
 const stalls: Stall[] = [
-  { id: '1', name: 'Ashok Vada Pav', area: 'Dadar West', location: { lat: 19.0183, lng: 72.8422 }, foodTypes: ['Vada Pav', 'Snacks'], photos: [foodImage('5560763'), foodImage('6646367')], avgRating: 4.8, reviewCount: 284, note: 'The crackly chilli-garlic chutney is the reason locals queue before the train rush.', openHours: '7:00 AM – 11:30 PM', price: '₹' },
-  { id: '2', name: 'Elco Pani Puri Centre', area: 'Bandra West', location: { lat: 19.0596, lng: 72.8295 }, foodTypes: ['Chaat', 'Pani Puri'], photos: [foodImage('1479330'), foodImage('1437267')], avgRating: 4.7, reviewCount: 219, note: 'Six waters, one perfectly crisp puri, and a very good excuse to order one more.', openHours: '11:00 AM – 10:30 PM', price: '₹₹' },
+  { id: '1', name: 'Ashok Vada Pav', area: 'Dadar West', location: { lat: 19.0183, lng: 72.8422 }, foodTypes: ['Vada Pav', 'Snacks'], photos: [foodImage('5560763'), foodImage('6646367')], avgRating: 4.8, reviewCount: 284, note: 'The crackly chilli-garlic chutney is the reason locals queue before the train rush.', openHours: '7:00 AM – 11:30 PM', price: '₹', addedAt: 'this week' },
+  { id: '2', name: 'Elco Pani Puri Centre', area: 'Bandra West', location: { lat: 19.0596, lng: 72.8295 }, foodTypes: ['Chaat', 'Pani Puri'], photos: [foodImage('1479330'), foodImage('1437267')], avgRating: 4.7, reviewCount: 219, note: 'Six waters, one perfectly crisp puri, and a very good excuse to order one more.', openHours: '11:00 AM – 10:30 PM', price: '₹₹', addedAt: 'this week' },
   { id: '3', name: 'Sardar Refreshments', area: 'Tardeo', location: { lat: 18.9717, lng: 72.8144 }, foodTypes: ['Pav Bhaji', 'Snacks'], photos: [foodImage('5638331'), foodImage('958545')], avgRating: 4.6, reviewCount: 176, note: 'The bhaji is buttery, smoky and unapologetically orange.', openHours: '12:00 PM – 1:00 AM', price: '₹₹' },
   { id: '4', name: 'Bademiya', area: 'Colaba', location: { lat: 18.922, lng: 72.8325 }, foodTypes: ['Kebabs', 'Rolls'], photos: [foodImage('1614401'), foodImage('1633578')], avgRating: 4.5, reviewCount: 342, note: 'Late-night seekh kebabs with the Gateway lights in the background.', openHours: '6:00 PM – 4:00 AM', price: '₹₹₹' },
   { id: '5', name: 'A1 Sandwich', area: 'Churchgate', location: { lat: 18.9322, lng: 72.8264 }, foodTypes: ['Sandwiches', 'Snacks'], photos: [foodImage('1601050690597'), foodImage('1528735602780')], avgRating: 4.4, reviewCount: 131, note: 'A toasted, overstuffed classic for the walk back from Marine Drive.', openHours: '4:00 PM – 1:00 AM', price: '₹' },
@@ -85,7 +97,7 @@ export async function getReviewsForStall(stallId: string): Promise<{ review: Rev
 }
 
 export async function submitReview(input: Omit<Review, 'id' | 'timestamp' | 'userId'>): Promise<Review> {
-  const review: Review = { ...input, id: `r${Date.now()}`, userId: 'u1', timestamp: 'just now' };
+  const review: Review = { ...input, id: `r${Date.now()}`, userId: 'u1', timestamp: 'just now', createdAt: Date.now() };
   reviews = [review, ...reviews];
   const stall = stalls.find((item) => item.id === input.stallId);
   if (stall) {
@@ -97,9 +109,35 @@ export async function submitReview(input: Omit<Review, 'id' | 'timestamp' | 'use
 }
 
 export async function submitStall(input: Omit<Stall, 'id' | 'avgRating' | 'reviewCount'>): Promise<Stall> {
-  const stall: Stall = { ...input, id: `s${Date.now()}`, avgRating: 0, reviewCount: 0 };
+  const stall: Stall = { ...input, id: `s${Date.now()}`, avgRating: 0, reviewCount: 0, addedAt: 'just now', createdAt: Date.now() };
   stalls.unshift(stall);
   return wait(stall, 300);
+}
+
+export async function getRecentActivity(limit = 6): Promise<Activity[]> {
+  const reviewActivity = reviews.flatMap((review): (Activity & { createdAt: number })[] => {
+    const stall = stalls.find((item) => item.id === review.stallId);
+    if (!stall) return [];
+    return [{
+        id: review.id,
+        kind: 'review' as const,
+        user: users.find((user) => user.id === review.userId) ?? users[0],
+        review,
+        stall,
+        timestamp: review.timestamp,
+        createdAt: review.createdAt ?? 0,
+      }];
+  });
+  const stallActivity: (Activity & { createdAt: number })[] = stalls.filter((stall) => stall.addedAt).map((stall) => ({
+    id: stall.id,
+    kind: 'stall' as const,
+    user: users[0],
+    stall,
+    timestamp: stall.addedAt ?? 'recently',
+    createdAt: stall.createdAt ?? 0,
+  }));
+  const activities = [...reviewActivity, ...stallActivity];
+  return wait(activities.sort((a, b) => b.createdAt - a.createdAt).slice(0, limit));
 }
 
 export const foodTypes = ['All', 'Vada Pav', 'Chaat', 'Pav Bhaji', 'Kebabs', 'Sandwiches', 'Dosa', 'Desserts'];

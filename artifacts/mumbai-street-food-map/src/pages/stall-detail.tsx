@@ -51,7 +51,7 @@ export default function StallDetailPage() {
               <div className="rounded-xl border border-border bg-card p-3"><Clock3 size={16} className="text-primary" /><p className="mt-2 text-xs font-semibold">{stall.openHours}</p><p className="mt-0.5 text-[11px] text-muted-foreground">Hours may vary</p></div>
             </div>
             <div className="mt-5 flex gap-2">
-              <button type="button" onClick={() => setShowReviewForm(true)} className="flex flex-1 items-center justify-center rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5" data-testid="button-detail-add-review">Write a review</button>
+              <button type="button" onClick={() => setShowReviewForm(true)} className="flex flex-1 items-center justify-center rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5" data-testid="button-detail-add-review">Add your review</button>
               <button type="button" onClick={() => setLiked(!liked)} className={`rounded-xl border px-3.5 transition-colors ${liked ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-card text-muted-foreground hover:text-foreground'}`} data-testid="button-save-stall"><Heart size={18} className={liked ? 'fill-primary' : ''} /></button>
               <button type="button" onClick={() => navigator.clipboard?.writeText(window.location.href)} className="rounded-xl border border-border bg-card px-3.5 text-muted-foreground hover:text-foreground" data-testid="button-share-stall"><Share2 size={18} /></button>
             </div>

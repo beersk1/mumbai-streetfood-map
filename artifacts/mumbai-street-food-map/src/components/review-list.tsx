@@ -10,9 +10,9 @@ export function ReviewList({ items, onAddReview }: { items: { review: Review; us
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">From the crawl</p>
           <h2 className="mt-1 font-serif text-2xl font-semibold tracking-[-0.04em]">What locals say</h2>
         </div>
-        <button type="button" onClick={onAddReview} className="rounded-xl bg-foreground px-3.5 py-2.5 text-xs font-semibold text-background transition-transform hover:-translate-y-0.5" data-testid="button-add-review">Add review</button>
+        <button type="button" onClick={onAddReview} className="rounded-xl bg-foreground px-3.5 py-2.5 text-xs font-semibold text-background transition-transform hover:-translate-y-0.5" data-testid="button-add-review">Add your review</button>
       </div>
-      <div className="divide-y divide-border rounded-2xl border border-border bg-card">
+      <div className="max-h-[680px] overflow-y-auto divide-y divide-border rounded-2xl border border-border bg-card">
         {items.length === 0 && <div className="px-5 py-12 text-center text-sm text-muted-foreground">No reviews yet. Be the first to leave a trail.</div>}
         {items.map(({ review, user }) => (
           <article key={review.id} className="p-4" data-testid={`review-${review.id}`}>
@@ -27,6 +27,7 @@ export function ReviewList({ items, onAddReview }: { items: { review: Review; us
                   <Rating value={review.rating} />
                 </div>
                 <p className="mt-3 text-sm leading-6 text-foreground/80">{review.text}</p>
+                {review.photoUrl && <img src={review.photoUrl} alt={`${user.name}'s food photo`} className="mt-3 max-h-56 w-full rounded-xl object-cover" />}
                 <div className="mt-2 flex items-center gap-2 text-[11px] font-medium text-muted-foreground"><Quote size={12} className="text-primary" />{review.foodType}{review.photoUrl && <><span>·</span><Camera size={12} />Photo</>}</div>
               </div>
             </div>

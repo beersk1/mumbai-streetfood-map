@@ -1,0 +1,40 @@
+Make the following changes to the app:
+
+1. REAL MAP
+Replace the current illustrated/decorative map background with an actual 
+interactive map using Leaflet (react-leaflet) and OpenStreetMap tiles — 
+no API key required. Pins must sit at real lat/lng coordinates for their 
+actual Mumbai locations (e.g. Dadar West, Bandra West, Colaba, Vile Parle 
+West, Churchgate — use real coordinates for each). Support normal pan and 
+zoom like a standard map app.
+
+2. STALL DETAIL PAGE — SOCIAL FEED
+When a user clicks into a stall (e.g. "Ashok Vada Pav"), the page should show:
+   - A scrollable list of individual reviews, each with: reviewer name/avatar, 
+     star rating, photo (if attached), written comment, and timestamp
+   - Not just an aggregate score — the actual reviews people wrote
+   - An "Add Your Review" button: star rating selector, photo upload, text box
+   - A "Recent Activity" feed on the homepage showing the latest reviews/stalls 
+     added anywhere on the app, so it feels alive and social, not static
+
+3. MAKE "ADD A STALL" A CORE ACTION, NOT A HEADER LINK
+"Add a Stall" is currently just a header button with the same weight as 
+"Discover" — it needs to feel like one of the main reasons someone opens 
+the app. Instead of a generic floating action button, do this:
+   - Add a second bold CTA directly in the hero section, next to or below 
+     "Find your next favourite bite" — something like "Know a spot? Add it" 
+     — same visual prominence as the headline area, not tucked in the header
+   - Make the map itself contribution-friendly: tapping/clicking anywhere on 
+     the map should open a small "Add a stall here?" prompt that drops a pin 
+     at that location and starts the Add Stall flow — this is more natural 
+     for a map-based app than a floating button
+   - Add a social-proof strip near the top, e.g. "X stalls added this week — 
+     add yours" (mock data is fine for the count), to reinforce that adding 
+     is an active, ongoing part of the app
+   - If a search returns no results for an area/food type, show an empty 
+     state like "No spots pinned here yet — be the first to add one" with a 
+     button straight into the Add Stall flow
+
+Keep the existing visual style (fonts, colors, card design, layout) — this 
+is about wiring up real geo-data and elevating the contribution flow, not 
+a redesign.

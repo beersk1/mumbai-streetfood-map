@@ -3,6 +3,21 @@
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
 
+.leaflet-container {
+  font-family: var(--app-font-sans);
+  background: #dfe9e3;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #f7f0dd;
+  color: #13233c;
+}
+
+.leaflet-popup-content {
+  margin: 14px;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

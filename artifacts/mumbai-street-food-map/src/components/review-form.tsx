@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Star, X } from 'lucide-react';
+import { ImagePlus, Star, X } from 'lucide-react';
 import { submitReview } from '@/lib/mock-service';
 
 export function ReviewForm({ stallId, stallName, onClose, onSubmitted }: { stallId: string; stallName: string; onClose: () => void; onSubmitted: () => void }) {
   const [rating, setRating] = useState(0);
   const [foodType, setFoodType] = useState('Signature dish');
   const [text, setText] = useState('');
+  const [photoUrl, setPhotoUrl] = useState('');
   const [saving, setSaving] = useState(false);
   const canSubmit = rating > 0 && text.trim().length > 8;
 
@@ -13,7 +14,7 @@ export function ReviewForm({ stallId, stallName, onClose, onSubmitted }: { stall
     event.preventDefault();
     if (!canSubmit) return;
     setSaving(true);
-    await submitReview({ stallId, foodType, rating, text: text.trim(), photoUrl: '' });
+    await submitReview({ stallId, foodType, rating, text: text.trim(), photoUrl });
     setSaving(false);
     onSubmitted();
   }
@@ -33,6 +34,8 @@ export function ReviewForm({ stallId, stallName, onClose, onSubmitted }: { stall
         <input id="review-food-type" value={foodType} onChange={(event) => setFoodType(event.target.value)} className="mt-2 w-full rounded-xl border border-input bg-background px-3.5 py-3 text-sm outline-none focus:border-primary" data-testid="input-review-food-type" />
         <label className="mt-4 block text-xs font-semibold" htmlFor="review-text">Your local intel</label>
         <textarea id="review-text" value={text} onChange={(event) => setText(event.target.value)} placeholder="Tell the next hungry person what to order..." rows={4} className="mt-2 w-full resize-none rounded-xl border border-input bg-background px-3.5 py-3 text-sm leading-6 outline-none focus:border-primary" data-testid="textarea-review-text" />
+        <label className="mt-4 flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-border bg-background px-3.5 py-3 text-xs font-semibold text-muted-foreground hover:border-primary hover:text-foreground" htmlFor="review-photo"><ImagePlus size={16} className="text-primary" />Add a food photo <input id="review-photo" type="file" accept="image/*" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; if (file) setPhotoUrl(URL.createObjectURL(file)); }} data-testid="input-review-photo" /></label>
+        {photoUrl && <img src={photoUrl} alt="Selected food preview" className="mt-2 h-24 w-full rounded-xl object-cover" />}
         <button disabled={!canSubmit || saving} className="mt-5 flex w-full items-center justify-center rounded-xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground transition-opacity disabled:cursor-not-allowed disabled:opacity-45" data-testid="button-submit-review">{saving ? 'Pinning your review…' : 'Publish review'}</button>
       </form>
     </div>
