@@ -1,0 +1,65 @@
+Build a mobile-first web app called "Mumbai Street Food Map" — a crowd-sourced 
+platform for rating street food across Mumbai (vada pav, rolls, samosas, chaat, etc). 
+Street food only, not restaurants.
+
+IMPORTANT — ARCHITECTURE REQUIREMENTS (this is a foundation for a real product, 
+built by a team, so structure matters more than polish right now):
+
+1. Use a mock data layer, not hardcoded data in components.
+   Create a separate data/service file (e.g. stallService.js, reviewService.js) with 
+   functions like getStalls(), getStallById(id), getTopRated(foodType), submitReview(data). 
+   These should return mock/dummy data for now, but every component should call these 
+   functions rather than importing raw JSON directly — so swapping in a real API later 
+   only means editing these files, not the UI components.
+
+2. Define clear data models up front, even with fake data:
+   - Stall: { id, name, location: {lat, lng}, area, foodTypes: [], photos: [], avgRating, reviewCount }
+   - Review: { id, stallId, userId, foodType, rating, text, photoUrl, timestamp }
+   - User: { id, name, avatarUrl, trustScore }
+   Keep these shapes consistent everywhere so they map cleanly onto a real database later.
+
+3. Component structure should be modular and reusable:
+   - MapView, StallCard, StallDetailPage, ReviewForm, ReviewList, FilterBar, TopTenList 
+     as separate, independent components
+   - No business logic inside UI components — keep filtering/sorting logic in helper 
+     functions or the service layer, not inline in JSX
+
+4. Centralize styling as a design system, not per-component inline styles:
+   - Define colors, spacing, and typography as reusable tokens/variables 
+     (e.g. a theme file or Tailwind config) so the look can be changed globally later
+
+5. Use config/constants for anything likely to change:
+   - List of food types (Vada Pav, Rolls, Samosa, Chaat, etc) as a single exported array, 
+     not repeated inline wherever it's used
+
+CORE SCREENS:
+
+1. MAP VIEW (home screen)
+   - Interactive map of Mumbai with pins marking street food stalls
+   - Pins colored/iconed by food type
+   - Tapping a pin opens a preview card: stall name, food type, star rating, one photo
+
+2. FILTER / SEARCH BAR
+   - Filter the map by food type
+   - Selecting a food type highlights/re-centers on top-rated pins for that item
+
+3. TOP 10 LIST VIEW
+   - Toggle between map view and ranked list view
+   - "Top 10 Vada Pav in Mumbai" style leaderboard: name, area, rating, review count, thumbnail
+
+4. STALL DETAIL PAGE
+   - Name, location, food types, rating, review count, photo gallery, review list
+   - "Add a Review" button
+
+5. ADD REVIEW / ADD STALL FLOW
+   - Add review: food type, star rating, text, photo upload
+   - Add stall: name, pin location, photo, food type tags
+
+DESIGN DIRECTION:
+   - Clean, modern, mobile-first — Zomato/Swiggy-level simplicity but more playful and social
+   - Bold typography, warm colors (Mumbai street energy — oranges, yellows, deep red accents)
+   - Card-based layouts, communal feel rather than corporate directory
+
+This is a clickable prototype using mock data — no real backend integration needed yet, 
+but structure the code so a real API/database can be plugged into the service layer later 
+without rewriting the UI.

@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Mumbai Street Food Map"
+description = "A mobile-first community map for discovering, rating, and sharing Mumbai's best street food stalls, with map browsing, ranked lists, stall details, and review flows."
+version = "1.0.0"
+id = "artifacts/mumbai-street-food-map"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20037
+
+[services.development]
+run = "pnpm --filter @workspace/mumbai-street-food-map run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/mumbai-street-food-map", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/mumbai-street-food-map/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20037"
+BASE_PATH = "/"
